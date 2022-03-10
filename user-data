@@ -2,6 +2,11 @@
 package_update: true
 package_upgrade: true
 
+growpart:
+ mode: auto
+ ignore_growroot_disabled: true
+ devices ['/']
+
 packages:
  - linux-headers-generic
  - apt-transport-https 
