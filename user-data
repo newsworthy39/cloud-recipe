@@ -2,14 +2,6 @@
 package_update: true
 package_upgrade: true
 
-apt:
- sources:
-    wireguard.list:
-      source: "ppa:wireguard/wireguard"    
-    docker.list: 
-      source: "deb [arch=amd64] https://download.docker.com/linux/ubuntu $RELEASE stable"
-      keyid: 0EBFCD88
-      
 packages:
  - linux-headers-generic
  - apt-transport-https 
@@ -18,12 +10,6 @@ packages:
  - software-properties-common
  - iptables-persistent
  - netfilter-persistent
- - wireguard 
- - wireguard-tools 
- - wireguard-dkms
- - docker-ce 
- - docker-ce-cli 
- - containerd.io
  
 users:
  - name: gandalf
@@ -37,11 +23,3 @@ users:
 
 runcmd:
   - sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin without-password/' /etc/ssh/sshd_config
-  - mkdir -p /etc/wireguard
-  - cd /etc/wireguard
-  - umask 077
-  - wg genkey | tee privatekey | wg pubkey > publickey
-  - curl "https://gist.githubusercontent.com/newsworthy39/5b8bcb2fcef9440df727035ad3f91b4c/raw/9805f2c8b852281045f1ad248ac8ec817ab9ac51/wg-quick.service" -o /lib/systemd/system/wg-quick.service
-  - curl "https://gist.githubusercontent.com/newsworthy39/5b8bcb2fcef9440df727035ad3f91b4c/raw/9805f2c8b852281045f1ad248ac8ec817ab9ac51/wg-quick@.service" -o /lib/systemd/system/wg-quick@.service
-  - curl "https://gist.githubusercontent.com/newsworthy39/b202bbb5428762b4b4a933aaa919a55f/raw/85c9ca75ff3868bf5738f7aab69dda40799ba398/wireguard-configuration-example" -o /etc/wireguard/wg0.conf
-  - systemctl enable wg-quick@wg0
