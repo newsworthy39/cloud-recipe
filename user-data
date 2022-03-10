@@ -1,0 +1,47 @@
+#cloud-config
+package_update: true
+package_upgrade: true
+
+apt:
+ sources:
+    wireguard.list:
+      source: "ppa:wireguard/wireguard"    
+    docker.list: 
+      source: "deb [arch=amd64] https://download.docker.com/linux/ubuntu $RELEASE stable"
+      keyid: 0EBFCD88
+      
+packages:
+ - linux-headers-generic
+ - apt-transport-https 
+ - ca-certificates 
+ - gnupg2 
+ - software-properties-common
+ - iptables-persistent
+ - netfilter-persistent
+ - wireguard 
+ - wireguard-tools 
+ - wireguard-dkms
+ - docker-ce 
+ - docker-ce-cli 
+ - containerd.io
+ 
+users:
+ - name: gandalf
+   gecos: gandalfcloud
+   primary_group: users
+   groups: [adm, sudo]
+   shell: /bin/bash
+   lock_passwd: false
+   passwd: $6$rXEZ/ZzZLDGi$c3DVrxr1HsY1xF5hUG2dNBHOU2jLXQFkyJWB8kcdnj96g1tzT.wl/NR.Uzxqe7GOp2BHu.yLRmo4GMGa4o3vX1
+   ssh_authorized_keys: [ 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGsRqfc14VCk5FwSLBrh9lr9bV+ZY0scho71E0bE7JoqZ+n4r8vCXRcCXSZ5EmOhhTj6ZpB597m8FqirTKEafISKHCdMS6Z4X+11Ns/5i+H8eu92hdHaqTPG3FmwaBX+LHuTwG0j+wNjiv750YZ6EazHwW3kLArSH0DOkGnfPj2t9rEHkCcQq/oIuGAvwunXh5YQR+9Cd7Xe3YfYBrCEP97HFpRt/yO36qeoCIwv/RTg5Sav7INoyVPs15RSEIpwTwfVf1K4D4rvlzYjl/KSonAbcvJFMnQZ+b8jkypfUndPFQKaWdRZ8gndWrkDE3VPA/dqYRwWQcCrpWxU/0t73D' ]
+
+runcmd:
+  - sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin without-password/' /etc/ssh/sshd_config
+  - mkdir -p /etc/wireguard
+  - cd /etc/wireguard
+  - umask 077
+  - wg genkey | tee privatekey | wg pubkey > publickey
+  - curl "https://gist.githubusercontent.com/newsworthy39/5b8bcb2fcef9440df727035ad3f91b4c/raw/9805f2c8b852281045f1ad248ac8ec817ab9ac51/wg-quick.service" -o /lib/systemd/system/wg-quick.service
+  - curl "https://gist.githubusercontent.com/newsworthy39/5b8bcb2fcef9440df727035ad3f91b4c/raw/9805f2c8b852281045f1ad248ac8ec817ab9ac51/wg-quick@.service" -o /lib/systemd/system/wg-quick@.service
+  - curl "https://gist.githubusercontent.com/newsworthy39/b202bbb5428762b4b4a933aaa919a55f/raw/85c9ca75ff3868bf5738f7aab69dda40799ba398/wireguard-configuration-example" -o /etc/wireguard/wg0.conf
+  - systemctl enable wg-quick@wg0
