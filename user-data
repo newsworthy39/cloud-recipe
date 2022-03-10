@@ -5,7 +5,7 @@ package_upgrade: true
 growpart:
  mode: auto
  ignore_growroot_disabled: true
- devices ['/']
+ devices: ['/']
 
 packages:
  - linux-headers-generic
