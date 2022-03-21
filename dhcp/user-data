@@ -7,6 +7,19 @@ growpart:
  ignore_growroot_disabled: true
  devices: ['/']
 
+device_aliases: {'ephemeral0': '/dev/vdb'}
+disk_setup:
+  ephemeral0:
+    table_type: mbr
+    layout: False
+    overwrite: False
+
+fs_setup:
+  - label: ephemeral0
+    filesystem: ext4
+    device: ephemeral0.0
+  
+
 packages:
  - linux-headers-generic
  - apt-transport-https 
