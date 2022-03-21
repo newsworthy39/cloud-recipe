@@ -1,5 +1,5 @@
 #cloud-config
-package_update: true
+package_update: false
 package_upgrade: false
 
 growpart:
@@ -7,27 +7,27 @@ growpart:
  ignore_growroot_disabled: true
  devices: ['/']
 
-device_aliases: {'ephemeral0': '/dev/vdb'}
 disk_setup:
-  ephemeral0:
-    table_type: mbr
-    layout: False
-    overwrite: False
+  /dev/vdb:
+    table_type: gpt
+    layout: true
+    overwrite: false
 
 fs_setup:
-  - label: ephemeral0
+  - label: datavol0
     filesystem: ext4
-    device: ephemeral0.0
+    device: '/dev/vdb'
   
+mounts:
+  - ["/dev/vdb", "/mnt/data_disk"]
 
 packages:
- - linux-headers-generic
  - apt-transport-https 
  - ca-certificates 
- - gnupg2 
  - software-properties-common
  - iptables-persistent
  - netfilter-persistent
+ - isc-dhcp-server
  
 users:
  - name: gandalf
