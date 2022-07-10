@@ -29,4 +29,9 @@ final_message: "The system is finally up, after $UPTIME seconds"
 
 runcmd:
   - sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin without-password/' /etc/ssh/sshd_config
+  - systemctl disable systemd-resolved.service
+  - systemctl stop systemd-resolved
+  - rm /etc/resolv.conf
+  - echo "nameserver 8.8.8.8" > /etc/resolv.conf
+  - chmod 755 /etc/resolv.conf 
   - reboot 
