@@ -1,0 +1,32 @@
+#cloud-config
+package_update: true
+package_upgrade: false
+
+packages:
+ - bridge-utils
+ - linux-headers-generic
+ - iptables-persistent
+ - netfilter-persistent
+ - software-properties-common
+ - jq
+
+users:
+ - name: gandalf
+   gecos: gandalfcloud
+   primary_group: users
+   groups: [adm, sudo, docker]
+   shell: /bin/bash
+   lock_passwd: false
+   passwd: $6$rXEZ/ZzZLDGi$c3DVrxr1HsY1xF5hUG2dNBHOU2jLXQFkyJWB8kcdnj96g1tzT.wl/NR.Uzxqe7GOp2BHu.yLRmo4GMGa4o3vX1
+   ssh_authorized_keys: [ 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGsRqfc14VCk5FwSLBrh9lr9bV+ZY0scho71E0bE7JoqZ+n4r8vCXRcCXSZ5EmOhhTj6ZpB597m8FqirTKEafISKHCdMS6Z4X+11Ns/5i+H8eu92hdHaqTPG3FmwaBX+LHuTwG0j+wNjiv750YZ6EazHwW3kLArSH0DOkGnfPj2t9rEHkCcQq/oIuGAvwunXh5YQR+9Cd7Xe3YfYBrCEP97HFpRt/yO36qeoCIwv/RTg5Sav7INoyVPs15RSEIpwTwfVf1K4D4rvlzYjl/KSonAbcvJFMnQZ+b8jkypfUndPFQKaWdRZ8gndWrkDE3VPA/dqYRwWQcCrpWxU/0t73D' ]
+
+power_state:
+ delay: "now"
+ mode: reboot
+ message: Rebooting! 
+ timeout: 120
+ condition: True
+ 
+runcmd:
+  - sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin prohibit-password/' /etc/ssh/sshd_config
+ 
