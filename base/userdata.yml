@@ -3,8 +3,6 @@ package_update: true
 package_upgrade: false
 
 packages:
- - bridge-utils
- - linux-headers-generic
  - iptables-persistent
  - netfilter-persistent
  - software-properties-common
